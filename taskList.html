@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+    <script src='https://cdn.firebase.com/js/client/1.0.15/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+    <meta charset="UTF-8">
+
+</head>
+    <style>
+        div{
+            background-color: white;
+            width: 300px;
+        }
+        #taskDiv {
+            font-size: 20px;
+        }
+        #taskInput{
+            width: 300px;
+            border: 80px;
+        }
+        </style>
+
+<body>
+<!-- Making empty div to hold message when it is typed-->
+<div id='taskDiv'></div>
+<!-- Create 2 textboxes for the name and chat message-->
+<input type='text' id='taskInput' placeholder='Click to Add Task'>
+
+
+<script>
+
+
+    //making a reference to database
+    var myDataRef = new Firebase('https://ecoapptask.firebaseio.com/');
+    //when you type a name and message, when you press enter it makes the message appear for both users by saving it.
+    $('#taskInput').keypress(function (e) {
+
+        if (e.keyCode == 13) {
+            var task = $('#taskInput').val();
+
+            myDataRef.push({task: task});
+            $('#taskInput').val('');
+        }
+    });
+    //taking a snapshot of message and showing it
+    myDataRef.on('child_added', function(snapshot) {
+        var message = snapshot.val();
+        displayChatMessage(message.task);
+    });
+    //telling us show it is displaying the text (bold name, colons, message)
+    function displayChatMessage(task) {
+
+        $('<div/>').text(task).prepend ($("<input type= 'checkbox' name = 'task'  onclick=(congratzAlert())  />")). appendTo($('#taskDiv'));
+
+    };
+
+    var alertlist=[];
+    function congratzAlert() {
+        alertlist.push("Yay! Good Job!");
+        alertlist.push("I knew you could do it!");
+        alertlist.push("Thanks for being eco-friendly!");
+        alert(alertlist[Math.floor((Math.random()* 2)+1)]);
+    }
+
+</script>
+
+</body>
+</html>
